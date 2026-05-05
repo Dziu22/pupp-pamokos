@@ -33,6 +33,26 @@ export const topicExamples = [
   "Ar žmogus gali išlikti žmogiškas sunkiose sąlygose?",
 ];
 
+export const pastPuppTopicStyleExamples = [
+  "Ar galima savo trūkumus paversti privalumais?",
+  "Kodėl svarbu išmanyti savo šalies istoriją?",
+  "Ar tiesa, kad apie žmogų reikia spręsti iš jo darbų, o ne žodžių?",
+  "Kodėl reikia vertinti tradicijas?",
+  "Nemesk kelio dėl takelio.",
+  "Jei nėra pasitikėjimo, nėra ir draugystės.",
+  "Ar mylėti reikia drąsos?",
+  "Kodėl reikia gyventi ir dėl kitų?",
+  "Nelaimė parodo ir draugą, ir priešą.",
+  "Ar mano laimė - mano rankose?",
+  "Kas lavina žmogaus vaizduotę?",
+  "Kodėl žmogui svarbi tėvynė?",
+  "Ar meilė tėvynei gali padėti žmogui išlikti?",
+  "Kodėl svarbu saugoti tautos atmintį?",
+  "Ar žmogaus darbai visada pasako daugiau negu žodžiai?",
+  "Ar sunkumai atskleidžia tikrąjį žmogaus veidą?",
+  "Kodėl žmogui svarbu turėti moralinį pagrindą?",
+];
+
 export const works: Work[] = [
   {
     id: "kuprelis",

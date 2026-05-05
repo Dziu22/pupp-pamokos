@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import OpenAI from "openai";
 import { AI_CONFIG } from "@/app/lib/ai-config";
-import { topicExamples, works } from "@/app/data/works";
+import { pastPuppTopicStyleExamples, topicExamples, works } from "@/app/data/works";
 
 type AiAction =
   | "generateTopic"
@@ -39,7 +39,37 @@ function buildPrompt(body: AiRequest) {
   const context = `Kūrinių bankas:\n${workContext()}`;
   switch (body.action) {
     case "generateTopic":
-      return `Sugeneruok vieną PUPP tipo samprotavimo rašinio temą. Grąžink tik temą. Pavyzdžiai: ${topicExamples.join("; ")}.`;
+      return `Sugeneruok vieną naują PUPP tipo 10 klasės samprotavimo rašinio temą lietuvių kalba.
+
+Tema PRIVALO būti tinkama remtis bent dviem kūriniais iš šio kūrinių banko:
+${context}
+
+Imituok realių PUPP temų STILIŲ. Temos dažnai būna:
+- klausimas su „Ar...?“ arba „Kodėl...?“;
+- sentencija / patarlės tipo mintis, kurią reikia paaiškinti;
+- apie žmogaus vertybes, elgesį, tėvynę, tradicijas, istoriją, pasitikėjimą, meilę, atsakomybę, darbus ir žodžius.
+
+PUPP stiliaus etalonai:
+${pastPuppTopicStyleExamples.map((topic) => `- ${topic}`).join("\n")}
+
+Geros temos kryptys: moralė, sąžinė, pareiga, sunkumai, meilė, šeima, atsakomybė, laisvė, pavydas, savimeilė, išvaizda, išlikimas, tikslas, pasiaukojimas, abejonės, žmogiškumas, tėvynė, šalies istorija, tradicijos, tautos atmintis, darbai ir žodžiai, pasitikėjimas, vaizduotė, laimė.
+
+Venk tuščių, labai bendrų šiuolaikinių temų, jei jos nesusietos su PUPP samprotavimu. Temos apie technologijas, internetą, socialinius tinklus, karjerą, sportą, ekologiją ar pinigus GALIMOS tik tada, jei centre yra vertybinis klausimas ir aiškiai galima remtis bent dviem kūriniais iš banko, pvz. atsakomybė, sąžinė, žmogiškumas, pasirinkimai, laisvė, tikslas, bendruomenė, tėvynė ar moralė.
+
+Draugystės tema irgi galima, bet ji turi būti apie pasitikėjimą, išbandymą, nelaimę, moralinį pasirinkimą ar pagalbą kitam žmogui, o ne abstrakti.
+
+Tema turi būti aiški, trumpa ir verta samprotauti. Ji gali būti klausimo forma arba sentencija. Ji neturi būti nukopijuota pažodžiui iš etalonų, bet turi skambėti taip, lyg galėtų būti PUPP užduotyje.
+
+Dar keli tinkami temų tipai: ${topicExamples.join("; ")}.
+
+Prieš grąžindamas temą tyliai pasitikrink:
+1. Ar jai tinka bent du kūriniai iš banko?
+2. Ar tema turi aiškią vertybinę problemą, o ne tik šiuolaikinį paviršių?
+3. Jei ji apie technologijas, karjerą ar kitą šiuolaikinę sritį, ar centre yra vertybinė PUPP problema ir ar galima remtis kūriniais?
+4. Ar ji skamba kaip PUPP, o ne kaip bendras klasės pokalbis?
+
+Grąžink TIK vieną temą, be paaiškinimo.
+Įvairovės kodas: ${Date.now()}-${Math.random().toString(36).slice(2)}.`;
     case "suggestWorksForTopic":
       return `${context}\n\nTema: ${body.topic}\nParink 2 geriausius kūrinius. Kiekvienam duok: kodėl tinka, vieną argumento kryptį, ko vengti.`;
     case "giveHint":
@@ -74,7 +104,7 @@ export async function POST(request: Request) {
     const client = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
     const completion = await client.chat.completions.create({
       model: AI_CONFIG.model,
-      temperature: AI_CONFIG.temperature,
+      temperature: body.action === "generateTopic" ? 0.9 : AI_CONFIG.temperature,
       max_tokens: AI_CONFIG.maxTokens,
       messages: [
         { role: "system", content: teacherSystem },
