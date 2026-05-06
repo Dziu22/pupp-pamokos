@@ -9,6 +9,7 @@ import {
   Flame,
   Home,
   Lightbulb,
+  Menu,
   PenLine,
   Radar,
   Search,
@@ -54,18 +55,17 @@ const navItems: { id: Section; label: string; icon: React.ElementType }[] = [
   { id: "topics", label: "Tema ir kūriniai", icon: Target },
   { id: "write", label: "Rašyti", icon: PenLine },
   { id: "ai", label: "AI", icon: Brain },
-  { id: "tests", label: "Testai", icon: ClipboardList },
+  { id: "tests", label: "Kortelės / žaidimai", icon: ClipboardList },
   { id: "progress", label: "Progresas", icon: Flame },
   { id: "cheat", label: "Špargalkė", icon: Lightbulb },
 ];
 
-const mobileNav = [
-  { id: "home" as Section, label: "Pradžia", icon: Home },
-  { id: "works" as Section, label: "Kūriniai", icon: BookOpen },
-  { id: "tests" as Section, label: "Kortelės", icon: ClipboardList },
-  { id: "write" as Section, label: "Rašyti", icon: PenLine },
-  { id: "ai" as Section, label: "AI", icon: Brain },
-  { id: "progress" as Section, label: "Progresas", icon: Flame },
+const mobileNav: { id: Section | "more"; label: string; icon: React.ElementType }[] = [
+  { id: "home", label: "Pradžia", icon: Home },
+  { id: "works", label: "Kūriniai", icon: BookOpen },
+  { id: "tests", label: "Kortelės", icon: ClipboardList },
+  { id: "write", label: "Rašyti", icon: PenLine },
+  { id: "more", label: "Daugiau", icon: Menu },
 ];
 
 const tagColors = [
@@ -95,6 +95,7 @@ function extractGeneratedTopic(answer: string) {
 
 export default function HomePage() {
   const [section, setSection] = useState<Section>("home");
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [progress, setProgress] = useState<UserProgress>(defaultProgress);
   const [search, setSearch] = useState("");
   const [topic, setTopic] = useState("Ar sunkumai stiprina žmogų?");
@@ -538,7 +539,7 @@ export default function HomePage() {
           {section === "tests" && (
             <section className="animate-rise-in mt-6 grid gap-4 lg:grid-cols-2">
               <div>
-                <SectionTitle title="Kortelės kūrinių mokymuisi" text="Telefonui patogus režimas: prisimink kūrinį, apversk kortelę, tada pažymėk, ar jau moki." />
+                <SectionTitle title="Kortelės / žaidimai kūrinių mokymuisi" text="Telefonui patogus režimas: prisimink kūrinį, apversk kortelę, tada pažymėk, ar jau moki." />
                 <Card>
                   <CardContent className="space-y-4 pt-5">
                     <div className="grid gap-3 sm:grid-cols-[1fr_auto]">
@@ -700,12 +701,50 @@ export default function HomePage() {
         </div>
       </div>
 
+      {mobileMenuOpen && (
+        <div className="fixed inset-x-3 bottom-[76px] z-30 rounded-lg border border-border bg-white p-3 shadow-soft lg:hidden">
+          <p className="px-2 pb-2 text-xs font-black uppercase text-muted-foreground">Visos funkcijos</p>
+          <div className="grid grid-cols-2 gap-2">
+            {navItems.map((item) => {
+              const Icon = item.icon;
+              return (
+                <button
+                  key={item.id}
+                  onClick={() => {
+                    setSection(item.id);
+                    setMobileMenuOpen(false);
+                  }}
+                  className={`flex items-center gap-2 rounded-md border px-3 py-3 text-left text-sm font-semibold ${
+                    section === item.id ? "border-teal-700 bg-teal-50 text-teal-900" : "border-border bg-slate-50 text-slate-700"
+                  }`}
+                >
+                  <Icon className="h-4 w-4 shrink-0" />
+                  {item.label}
+                </button>
+              );
+            })}
+          </div>
+        </div>
+      )}
+
       <nav className="fixed inset-x-0 bottom-0 z-20 border-t border-border bg-white/95 px-2 py-2 shadow-soft backdrop-blur lg:hidden">
-        <div className="mx-auto grid max-w-xl grid-cols-6 gap-1">
+        <div className="mx-auto grid max-w-lg grid-cols-5 gap-1">
           {mobileNav.map((item) => {
             const Icon = item.icon;
+            const active = item.id === "more" ? mobileMenuOpen : section === item.id;
             return (
-              <button key={item.id} onClick={() => setSection(item.id)} className={`rounded-md px-1 py-2 text-[11px] font-semibold ${section === item.id ? "bg-teal-700 text-white" : "text-slate-600"}`}>
+              <button
+                key={item.id}
+                onClick={() => {
+                  if (item.id === "more") {
+                    setMobileMenuOpen((open) => !open);
+                    return;
+                  }
+                  setSection(item.id);
+                  setMobileMenuOpen(false);
+                }}
+                className={`rounded-md px-1 py-2 text-[11px] font-semibold ${active ? "bg-teal-700 text-white" : "text-slate-600"}`}
+              >
                 <Icon className="mx-auto mb-1 h-4 w-4" />
                 {item.label}
               </button>
