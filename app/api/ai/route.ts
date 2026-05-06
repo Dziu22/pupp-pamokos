@@ -107,7 +107,8 @@ Galimos kryptys:
 1. TAIP -
 2. NE -
 3. IŠ DALIES -
-Įvairovės kodas: ${Date.now()}-${Math.random().toString(36).slice(2)}.`;
+
+Nerodyk jokių vidinių kodų, seedų, atsitiktinių žymų ar techninių pastabų. Vartotojui turi matytis tik tema, problema ir kryptys.`;
     case "suggestWorksForTopic":
       return `${context}\n\nTema: ${body.topic}\n\nParink 2 geriausiai šiai temai tinkančius kūrinius iš banko. Atsakyk praktiškai 10 klasės mokiniui, ne enciklopediškai.\n\nKiekvienam kūriniui pateik:\n- Kūrinys\n- Kodėl tinka\n- Argumento kryptis\n- Ką galima teigti\n- Kokios klaidos vengti\n\nPabaigoje pridėk bendrą perspėjimą: nerašyti vien kūrinio santraukos, būtina paaiškinti, ką kūrinys įrodo apie temą.`;
     case "suggestTopicsForWorks":

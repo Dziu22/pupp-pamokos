@@ -11,7 +11,6 @@ import {
   Lightbulb,
   Menu,
   PenLine,
-  Radar,
   Search,
   Sparkles,
   Target,
@@ -63,6 +62,7 @@ const navItems: { id: Section; label: string; icon: React.ElementType }[] = [
 const mobileNav: { id: Section | "more"; label: string; icon: React.ElementType }[] = [
   { id: "home", label: "Pradžia", icon: Home },
   { id: "works", label: "Kūriniai", icon: BookOpen },
+  { id: "topics", label: "Temos", icon: Target },
   { id: "tests", label: "Kortelės", icon: ClipboardList },
   { id: "write", label: "Rašyti", icon: PenLine },
   { id: "more", label: "Daugiau", icon: Menu },
@@ -306,7 +306,7 @@ export default function HomePage() {
           <Hero setSection={setSection} progress={progress} readPercent={readPercent} />
 
           {section === "home" && (
-            <section className="animate-rise-in mt-6 grid gap-4 lg:grid-cols-3">
+            <section className="animate-rise-in mt-6 grid gap-4 lg:grid-cols-2">
               <DashboardCard title="Šiandienos fokusas" icon={Target}>
                 <p className="text-sm text-muted-foreground">Pasirink temą, susirask 2 kūrinius ir parašyk bent 180 žodžių juodraštį.</p>
                 <Button className="mt-4 w-full" onClick={() => setSection("write")}>
@@ -319,13 +319,7 @@ export default function HomePage() {
                   Atidaryti
                 </Button>
               </DashboardCard>
-              <DashboardCard title="Klaidų radaras" icon={Radar}>
-                <p className="text-sm text-muted-foreground">Patikrina, ar yra nuomonė, 2 kūriniai, paaiškinimas, išvada ir faktų rizikos.</p>
-                <Button className="mt-4 w-full" variant="outline" onClick={() => callAi("detectFactualMistakes")}>
-                  <Radar className="h-4 w-4" /> Paleisti
-                </Button>
-              </DashboardCard>
-              <Card className="lg:col-span-3">
+              <Card className="lg:col-span-2">
                 <CardHeader>
                   <CardTitle>Greitas progresas</CardTitle>
                 </CardHeader>
@@ -728,7 +722,7 @@ export default function HomePage() {
       )}
 
       <nav className="fixed inset-x-0 bottom-0 z-20 border-t border-border bg-white/95 px-2 py-2 shadow-soft backdrop-blur lg:hidden">
-        <div className="mx-auto grid max-w-lg grid-cols-5 gap-1">
+        <div className="mx-auto grid max-w-xl grid-cols-6 gap-1">
           {mobileNav.map((item) => {
             const Icon = item.icon;
             const active = item.id === "more" ? mobileMenuOpen : section === item.id;
