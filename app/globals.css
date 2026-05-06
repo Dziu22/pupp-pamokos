@@ -44,3 +44,58 @@ textarea {
 ::selection {
   background: rgba(20, 184, 166, 0.22);
 }
+
+@layer utilities {
+  .animate-soft-in {
+    animation: soft-in 260ms ease-out both;
+  }
+
+  .animate-rise-in {
+    animation: rise-in 320ms ease-out both;
+  }
+
+  .smooth-card {
+    transition:
+      transform 180ms ease,
+      box-shadow 180ms ease,
+      border-color 180ms ease,
+      background-color 180ms ease;
+  }
+
+  .smooth-card:hover {
+    transform: translateY(-1px);
+  }
+}
+
+@keyframes soft-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes rise-in {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-soft-in,
+  .animate-rise-in {
+    animation: none;
+  }
+
+  .smooth-card,
+  .smooth-card:hover {
+    transform: none;
+    transition: none;
+  }
+}
