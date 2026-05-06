@@ -24,6 +24,7 @@ AI kvietimai vyksta tik per server-side route `app/api/ai/route.ts`. Frontend'e 
 
 ## Struktūra
 
+- `PROJECT_RULES.md` - svarbiausios projekto taisyklės, faktų pataisymai ir AI elgesio principai.
 - `app/data/works.ts` - kūrinių duomenys, temos ir argumentų kryptys.
 - `app/lib/ai-config.ts` - vienoje vietoje laikomas AI modelio config.
 - `app/api/ai/route.ts` - serverinis OpenAI API maršrutas.

@@ -21,7 +21,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Progress } from "@/components/ui/progress";
 import { Textarea } from "@/components/ui/textarea";
-import { lastDayWorkIds, quizQuestions, works, type Work } from "@/app/data/works";
+import { lastDayWorkIds, quizQuestions, works, type ArgumentEntry, type Work } from "@/app/data/works";
 
 type Section = "home" | "works" | "topics" | "write" | "ai" | "tests" | "progress" | "cheat";
 
@@ -37,6 +37,12 @@ type UserProgress = {
 type ChatMessage = {
   role: "user" | "ai";
   text: string;
+};
+
+type QuizQuestion = {
+  question: string;
+  options: string[];
+  answer: string;
 };
 
 const defaultProgress: UserProgress = {
@@ -93,13 +99,35 @@ function extractGeneratedTopic(answer: string) {
   return topicLine ? topicLine.replace(/^tema:\s*/i, "").trim() : answer.trim();
 }
 
+function parseQuiz(raw: string | undefined): QuizQuestion[] {
+  if (!raw) return [];
+  const cleaned = raw.replace(/```json|```/g, "").trim();
+  try {
+    const parsed = JSON.parse(cleaned) as QuizQuestion[];
+    if (!Array.isArray(parsed)) return [];
+    return parsed
+      .filter(
+        (item) =>
+          item &&
+          typeof item.question === "string" &&
+          Array.isArray(item.options) &&
+          item.options.length === 3 &&
+          typeof item.answer === "string" &&
+          item.options.includes(item.answer),
+      )
+      .slice(0, 5);
+  } catch {
+    return [];
+  }
+}
+
 export default function HomePage() {
   const [section, setSection] = useState<Section>("home");
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [progress, setProgress] = useState<UserProgress>(defaultProgress);
   const [search, setSearch] = useState("");
   const [topic, setTopic] = useState("Ar sunkumai stiprina žmogų?");
-  const [topicWorks, setTopicWorks] = useState({ first: "Antigonė", second: "Prometėjas" });
+  const [topicWorks, setTopicWorks] = useState({ first: "Kuprelis", second: "Mano vardas Marytė" });
   const [generatedTopics, setGeneratedTopics] = useState<string[]>([]);
   const [essay, setEssay] = useState("");
   const [checks, setChecks] = useState({ works: false, theme: false, ending: false, spelling: false });
@@ -112,7 +140,10 @@ export default function HomePage() {
   const [flashIndex, setFlashIndex] = useState(0);
   const [flashBack, setFlashBack] = useState(false);
   const [flashLevel, setFlashLevel] = useState<"paprasta" | "vidutine" | "stipresne">("paprasta");
+  const [activeQuiz, setActiveQuiz] = useState<QuizQuestion[]>(quizQuestions);
   const [quizPick, setQuizPick] = useState<Record<number, string>>({});
+  const [quizLoading, setQuizLoading] = useState(false);
+  const [quizMessage, setQuizMessage] = useState("");
   const [rescue, setRescue] = useState({ stance: "IŠ DALIES", rememberedWorks: "Antigonė, Kuprelis" });
 
   useEffect(() => {
@@ -244,14 +275,40 @@ export default function HomePage() {
     }
   }
 
-  function finishQuiz() {
-    const correct = quizQuestions.filter((question, index) => quizPick[index] === question.answer).length;
+  async function finishQuiz() {
+    const correct = activeQuiz.filter((question, index) => quizPick[index] === question.answer).length;
     setProgress((current) => ({
       ...current,
       testsDone: current.testsDone + 1,
-      mistakes: correct === quizQuestions.length ? current.mistakes : [...new Set([...current.mistakes, "pasikartoti kūrinių temas"])],
+      mistakes: correct === activeQuiz.length ? current.mistakes : [...new Set([...current.mistakes, "pasikartoti kūrinių temas"])],
     }));
     markStudied();
+    setQuizMessage(`Rezultatas: ${correct}/${activeQuiz.length}. Generuoju naują quiz...`);
+    await refreshQuiz();
+  }
+
+  async function refreshQuiz() {
+    setQuizLoading(true);
+    try {
+      const response = await fetch("/api/ai", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ action: "generateQuiz" }),
+      });
+      const data = await response.json();
+      const nextQuiz = parseQuiz(data.result);
+      if (!nextQuiz.length) {
+        setQuizMessage(data.error || "Nepavyko sugeneruoti naujo quiz.");
+        return;
+      }
+      setActiveQuiz(nextQuiz);
+      setQuizPick({});
+      setQuizMessage("Naujas quiz paruoštas.");
+    } catch {
+      setQuizMessage("Nepavyko prisijungti prie AI quiz generatoriaus.");
+    } finally {
+      setQuizLoading(false);
+    }
   }
 
   function goToFlash(nextIndex: number) {
@@ -357,43 +414,46 @@ export default function HomePage() {
           {section === "topics" && (
             <section className="animate-rise-in mt-6 grid gap-4 lg:grid-cols-[1fr_360px]">
               <div>
-                <SectionTitle title="Tema ir kūriniai" text="Du režimai: pagal gautą temą parink 2 kūrinius arba pagal 2 kūrinius susirask tinkamas temas." />
+                <SectionTitle title="Tema ir kūriniai" text="AI duoda PUPP temą, o tu pats pasirenki 2 kūrinius. Tada AI patikrina, ar pasirinkimas veikia rašinyje." />
                 <div className="grid gap-4">
                   <Card>
                     <CardHeader>
-                      <CardTitle>Gavau temą → parink 2 kūrinius</CardTitle>
+                      <CardTitle>AI tema → mano 2 kūriniai</CardTitle>
                     </CardHeader>
                     <CardContent className="space-y-3">
                       <Input value={topic} onChange={(event) => setTopic(event.target.value)} placeholder="Pvz. Ar sunkumai stiprina žmogų?" />
+                      <div className="grid gap-3 sm:grid-cols-2">
+                        <WorkPicker
+                          label="Pirmas kūrinys"
+                          value={topicWorks.first}
+                          onChange={(value) => setTopicWorks((current) => ({ ...current, first: value }))}
+                        />
+                        <WorkPicker
+                          label="Antras kūrinys"
+                          value={topicWorks.second}
+                          onChange={(value) => setTopicWorks((current) => ({ ...current, second: value }))}
+                        />
+                      </div>
                       <div className="flex flex-wrap gap-2">
                         <Button onClick={() => callAi("generateTopic")} disabled={aiLoading}>
                           <Sparkles className="h-4 w-4" /> AI parenka temą
                         </Button>
+                        <Button
+                          onClick={() => callAi("evaluateChosenWorks", { selectedWorks: [topicWorks.first, topicWorks.second] })}
+                          disabled={aiLoading || topicWorks.first === topicWorks.second}
+                        >
+                          Patikrink mano 2 kūrinius
+                        </Button>
                         <Button variant="outline" onClick={() => callAi("suggestWorksForTopic")} disabled={aiLoading}>
-                          Pasiūlyk 2 kūrinius
+                          Reikia pagalbos? Pasiūlyk
                         </Button>
                       </div>
-                    </CardContent>
-                  </Card>
-
-                  <Card>
-                    <CardHeader>
-                      <CardTitle>Turiu 2 kūrinius → pasiūlyk temas</CardTitle>
-                    </CardHeader>
-                    <CardContent className="space-y-3">
-                      <div className="grid gap-3 sm:grid-cols-2">
-                        <WorkSelect value={topicWorks.first} onChange={(value) => setTopicWorks((current) => ({ ...current, first: value }))} />
-                        <WorkSelect value={topicWorks.second} onChange={(value) => setTopicWorks((current) => ({ ...current, second: value }))} />
-                      </div>
-                      <Button
-                        onClick={() => callAi("suggestTopicsForWorks", { selectedWorks: [topicWorks.first, topicWorks.second] })}
-                        disabled={aiLoading || topicWorks.first === topicWorks.second}
-                      >
-                        <Target className="h-4 w-4" /> Pasiūlyk temas šiems kūriniams
-                      </Button>
                       {topicWorks.first === topicWorks.second && (
                         <p className="text-sm text-rose-700">Pasirink 2 skirtingus kūrinius.</p>
                       )}
+                      <p className="text-sm text-muted-foreground">
+                        Pirmas mygtukas sugeneruoja temą. Tada pasirink 2 kūrinius ir patikrink, ar jie tinka argumentams.
+                      </p>
                     </CardContent>
                   </Card>
                 </div>
@@ -435,7 +495,16 @@ export default function HomePage() {
                         <p><strong>Turinys: 10 tšk.</strong><br />Temos suvokimas: 5<br />Argumentai: 5</p>
                         <p><strong>Struktūra / raiška: 8 tšk.</strong><br />Struktūra: 3<br />Raiška: 5</p>
                         <p><strong>Raštingumas: 12 tšk.</strong><br />Klaidų skaičius pagal NŠA lentelę. Iki 100 žodžių vertinamas tik turinys.</p>
-                        <p className="md:col-span-3 text-xs text-sky-800">Pagal NŠA PUPP rašymo vertinimo kriterijus.</p>
+                        <p className="md:col-span-3 text-xs text-sky-800">
+                          <a
+                            className="font-semibold underline underline-offset-2 hover:text-sky-950"
+                            href="https://www.nsa.smsm.lt/wp-content/uploads/2025/07/PUPPrasymovertinimokriterijai.pdf"
+                            target="_blank"
+                            rel="noreferrer"
+                          >
+                            Pagal NŠA PUPP rašymo vertinimo kriterijus.
+                          </a>
+                        </p>
                       </CardContent>
                     </Card>
                     <Textarea
@@ -587,7 +656,12 @@ export default function HomePage() {
                           <p><strong>Pagrindinė mintis:</strong> {flashWork.mainIdea}</p>
                           <p><strong>Problema:</strong> {flashWork.problem}</p>
                           <p><strong>Temos:</strong> {flashWork.themes.slice(0, 8).join(", ")}</p>
-                          <p><strong>{flashLevel} argumento kryptis:</strong> {flashWork.argumentBank[flashLevel]}</p>
+                          <div className="rounded-md border border-teal-200 bg-white p-3">
+                            <p className="font-bold">{flashLevel} argumento kryptis</p>
+                            <p className="mt-2"><strong>Mintis:</strong> {flashWork.argumentBank[flashLevel].idea}</p>
+                            <p className="mt-1"><strong>Įvykis:</strong> {flashWork.argumentBank[flashLevel].event}</p>
+                            <p className="mt-1"><strong>Susiejimas:</strong> {flashWork.argumentBank[flashLevel].connection}</p>
+                          </div>
                           <p className="rounded-md border border-rose-200 bg-white p-3 text-rose-900"><strong>Ko nepamiršti:</strong> {flashWork.commonMistakes}</p>
                         </div>
                       )}
@@ -615,7 +689,7 @@ export default function HomePage() {
                   <CardTitle>Quiz</CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-4">
-                  {quizQuestions.map((question, index) => (
+                  {activeQuiz.map((question, index) => (
                     <div key={question.question} className="rounded-md border bg-white p-3">
                       <p className="font-semibold">{question.question}</p>
                       <div className="mt-2 flex flex-wrap gap-2">
@@ -632,7 +706,15 @@ export default function HomePage() {
                       )}
                     </div>
                   ))}
-                  <Button onClick={finishQuiz}>Užskaityti testą</Button>
+                  {quizMessage && <p className="text-sm text-muted-foreground">{quizMessage}</p>}
+                  <div className="flex flex-wrap gap-2">
+                    <Button onClick={finishQuiz} disabled={quizLoading || Object.keys(quizPick).length < activeQuiz.length}>
+                      {quizLoading ? "Generuoju..." : "Užskaityti testą"}
+                    </Button>
+                    <Button variant="outline" onClick={refreshQuiz} disabled={quizLoading}>
+                      Naujas AI quiz
+                    </Button>
+                  </div>
                 </CardContent>
               </Card>
             </section>
@@ -817,19 +899,92 @@ function MetricCard({ label, value, progress }: { label: string; value: string; 
   );
 }
 
-function WorkSelect({ value, onChange }: { value: string; onChange: (value: string) => void }) {
+function WorkPicker({ label, value, onChange }: { label: string; value: string; onChange: (value: string) => void }) {
+  const [query, setQuery] = useState(value);
+  const [open, setOpen] = useState(false);
+  const selectedWork = works.find((work) => work.title === value);
+  const filtered = works
+    .filter((work) => {
+      const normalized = query.toLowerCase();
+      return (
+        work.title.toLowerCase().includes(normalized) ||
+        work.author.toLowerCase().includes(normalized) ||
+        work.themes.some((theme) => theme.toLowerCase().includes(normalized))
+      );
+    });
+
   return (
-    <select
-      className="h-10 w-full rounded-md border border-input bg-white px-3 text-sm shadow-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-      value={value}
-      onChange={(event) => onChange(event.target.value)}
-    >
-      {works.map((work) => (
-        <option key={work.id} value={work.title}>
-          {work.title}
-        </option>
-      ))}
-    </select>
+    <div className="relative rounded-lg border border-border bg-white p-3 shadow-sm">
+      <p className="mb-2 text-xs font-black uppercase text-muted-foreground">{label}</p>
+      <div className="flex items-center gap-2 rounded-md border border-input bg-slate-50 px-3">
+        <Search className="h-4 w-4 shrink-0 text-muted-foreground" />
+        <input
+          className="h-10 min-w-0 flex-1 bg-transparent text-sm outline-none placeholder:text-muted-foreground"
+          value={query}
+          onChange={(event) => {
+            setQuery(event.target.value);
+            setOpen(true);
+          }}
+          onFocus={() => {
+            setQuery(value);
+            setOpen(true);
+          }}
+          placeholder="Ieškok kūrinio, autoriaus ar temos..."
+        />
+      </div>
+
+      <div className="mt-3 rounded-md border border-teal-200 bg-teal-50 p-3">
+        <p className="text-sm font-black text-teal-950">{value}</p>
+        {selectedWork && (
+          <p className="mt-1 line-clamp-2 text-xs text-teal-900">
+            {selectedWork.themes.slice(0, 4).join(", ")}
+          </p>
+        )}
+      </div>
+
+      {open && (
+        <div className="absolute left-3 right-3 top-[76px] z-30 max-h-80 overflow-auto rounded-lg border border-border bg-white p-2 shadow-soft">
+          <div className="mb-2 flex items-center justify-between px-2 py-1">
+            <p className="text-[11px] font-black uppercase text-muted-foreground">Rasta: {filtered.length}</p>
+            <p className="text-[11px] text-muted-foreground">Pasirink kūrinį</p>
+          </div>
+          {filtered.length ? (
+            filtered.map((work) => (
+              <button
+                key={work.id}
+                type="button"
+                onMouseDown={(event) => event.preventDefault()}
+                onClick={() => {
+                  onChange(work.title);
+                  setQuery(work.title);
+                  setOpen(false);
+                }}
+                className={`w-full rounded-md px-3 py-2 text-left transition hover:bg-muted ${
+                  value === work.title ? "bg-teal-50" : ""
+                }`}
+              >
+                <div className="flex items-start justify-between gap-3">
+                  <p className="text-sm font-bold text-slate-900">{work.title}</p>
+                  {value === work.title && <CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0 text-teal-700" />}
+                </div>
+                <p className="mt-0.5 text-xs text-muted-foreground">{work.author}</p>
+                <div className="mt-2 flex flex-wrap gap-1">
+                  {work.themes.slice(0, 4).map((theme) => (
+                    <span key={theme} className="rounded-full bg-slate-100 px-2 py-0.5 text-[11px] font-semibold text-slate-600">
+                      {theme}
+                    </span>
+                  ))}
+                </div>
+              </button>
+            ))
+          ) : (
+            <p className="px-3 py-2 text-sm text-muted-foreground">Nieko neradau.</p>
+          )}
+        </div>
+      )}
+
+      {open && <button className="fixed inset-0 z-20 cursor-default" type="button" onClick={() => setOpen(false)} aria-label="Uždaryti kūrinių paiešką" />}
+    </div>
   );
 }
 
@@ -867,9 +1022,9 @@ function WorkCard({
         <details className="rounded-md bg-slate-50 p-3">
           <summary className="cursor-pointer font-semibold">Argumentų bankas</summary>
           <div className="mt-2 grid gap-2">
-            <ArgumentLevelBox level="Paprasta" className="border-emerald-200 bg-emerald-50 text-emerald-950" text={work.argumentBank.paprasta} />
-            <ArgumentLevelBox level="Vidutinė" className="border-sky-200 bg-sky-50 text-sky-950" text={work.argumentBank.vidutine} />
-            <ArgumentLevelBox level="Stipresnė" className="border-violet-200 bg-violet-50 text-violet-950" text={work.argumentBank.stipresne} />
+            <ArgumentLevelBox level="Paprasta" className="border-emerald-200 bg-emerald-50 text-emerald-950" argument={work.argumentBank.paprasta} />
+            <ArgumentLevelBox level="Vidutinė" className="border-sky-200 bg-sky-50 text-sky-950" argument={work.argumentBank.vidutine} />
+            <ArgumentLevelBox level="Stipresnė" className="border-violet-200 bg-violet-50 text-violet-950" argument={work.argumentBank.stipresne} />
           </div>
         </details>
         <p className="rounded-md border border-rose-200 bg-rose-50 p-3 text-rose-900"><strong>Dažna klaida:</strong> {work.commonMistakes}</p>
@@ -881,11 +1036,15 @@ function WorkCard({
   );
 }
 
-function ArgumentLevelBox({ level, text, className }: { level: string; text: string; className: string }) {
+function ArgumentLevelBox({ level, argument, className }: { level: string; argument: ArgumentEntry; className: string }) {
   return (
     <div className={`rounded-md border p-3 ${className}`}>
       <p className="text-xs font-black uppercase">{level}</p>
-      <p className="mt-1">{text}</p>
+      <div className="mt-2 space-y-2">
+        <p><strong>Argumento mintis:</strong> {argument.idea}</p>
+        <p><strong>Konkretus įvykis / situacija:</strong> {argument.event}</p>
+        <p><strong>Kaip susieti su tema:</strong> {argument.connection}</p>
+      </div>
     </div>
   );
 }
@@ -955,7 +1114,16 @@ function AiPanel({
         {isEssayCheck && result && !loading ? (
           <div className="space-y-3">
             <div className="rounded-lg border border-sky-200 bg-sky-50 p-3">
-              <p className="text-xs font-semibold text-sky-950">Vertinama pagal NŠA patvirtintus PUPP rašymo ir teksto kūrimo užduoties bendruosius vertinimo kriterijus.</p>
+              <p className="text-xs font-semibold text-sky-950">
+                <a
+                  className="underline underline-offset-2 hover:text-sky-800"
+                  href="https://www.nsa.smsm.lt/wp-content/uploads/2025/07/PUPPrasymovertinimokriterijai.pdf"
+                  target="_blank"
+                  rel="noreferrer"
+                >
+                  Vertinama pagal NŠA patvirtintus PUPP rašymo ir teksto kūrimo užduoties bendruosius vertinimo kriterijus.
+                </a>
+              </p>
               <p className="mt-1 text-[11px] text-sky-800" title="Tai nėra oficialus NŠA vertinimas. AI pateikia apytikslį įvertinimą pagal kriterijus.">
                 Tai nėra oficialus NŠA vertinimas. AI pateikia apytikslį įvertinimą pagal kriterijus.
               </p>

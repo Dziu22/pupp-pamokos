@@ -6,7 +6,8 @@ import { pastPuppTopicStyleExamples, topicExamples, works } from "@/app/data/wor
 type AiAction =
   | "generateTopic"
   | "suggestWorksForTopic"
-  | "suggestTopicsForWorks"
+  | "evaluateChosenWorks"
+  | "generateQuiz"
   | "giveHint"
   | "checkEssay"
   | "fixLanguageOnly"
@@ -111,8 +112,10 @@ Galimos kryptys:
 Nerodyk jokių vidinių kodų, seedų, atsitiktinių žymų ar techninių pastabų. Vartotojui turi matytis tik tema, problema ir kryptys.`;
     case "suggestWorksForTopic":
       return `${context}\n\nTema: ${body.topic}\n\nParink 2 geriausiai šiai temai tinkančius kūrinius iš banko. Atsakyk praktiškai 10 klasės mokiniui, ne enciklopediškai.\n\nKiekvienam kūriniui pateik:\n- Kūrinys\n- Kodėl tinka\n- Argumento kryptis\n- Ką galima teigti\n- Kokios klaidos vengti\n\nPabaigoje pridėk bendrą perspėjimą: nerašyti vien kūrinio santraukos, būtina paaiškinti, ką kūrinys įrodo apie temą.`;
-    case "suggestTopicsForWorks":
-      return `${context}\n\nMokinys turi šiuos 2 kūrinius: ${(body.selectedWorks || []).join(" + ")}.\n\nPasiūlyk 5-8 PUPP tipo samprotavimo temas, kurioms šie abu kūriniai tinka kartu.\n\nPrie kiekvienos temos pateik:\n1. Temos formuluotę\n- Kaip naudoti pirmą kūrinį\n- Kaip naudoti antrą kūrinį\n- Tezė / pagrindinė mintis\n\nTemos turi skambėti kaip realios PUPP temos: apie vertybes, pasirinkimus, moralę, pareigą, meilę, tėvynę, tradicijas, atsakomybę, sunkumus, žmogiškumą, pasitikėjimą ar žmogaus ydas. Neperrašyk viso rašinio.`;
+    case "evaluateChosenWorks":
+      return `${context}\n\nTema: ${body.topic}\nMokinys pasirinko 2 kūrinius: ${(body.selectedWorks || []).join(" + ")}\n\nĮvertink, ar šie 2 kūriniai tinka šiai PUPP samprotavimo rašinio temai. Neparink iškart kitų, nebent vienas pasirinkimas akivaizdžiai netinka.\n\nFormatas:\nTema:\nPasirinkimas: geras / rizikingas / netinkamas\n\nKūrinys 1:\nAr tinka:\nKaip panaudoti argumente:\nKą šis kūrinys įrodo apie temą:\nKlaida, kurios vengti:\n\nKūrinys 2:\nAr tinka:\nKaip panaudoti argumente:\nKą šis kūrinys įrodo apie temą:\nKlaida, kurios vengti:\n\nBendra tezė, kuri sujungtų abu kūrinius:\nJei pasirinkimas rizikingas, ką keisti minimaliai:`;
+    case "generateQuiz":
+      return `${context}\n\nSugeneruok naują trumpą PUPP kūrinių mokymosi quiz lietuviškai. Klausimai turi būti tokio pobūdžio: pagal temą parinkti kūrinį, pagal veikėją atpažinti kūrinį, pagal argumento kryptį atpažinti kūrinį, atskirti dažną klaidą. Naudok tik kūrinius iš banko ir venk faktinių klaidų.\n\nGrąžink TIK validų JSON masyvą be markdown, be komentarų. Tiksliai 5 objektai:\n[\n  { "question": "...", "options": ["...", "...", "..."], "answer": "..." }\n]\n\nTaisyklės:\n- options turi turėti 3 skirtingus variantus.\n- answer privalo tiksliai sutapti su vienu options elementu.\n- klausimai turi būti trumpi, naudingi 10 klasei ir ne per lengvi.`;
     case "giveHint":
       return `${context}\n\nTema: ${body.topic}\nMokinio tekstas:\n${body.essay}\n\nŽiūrėk, kur mokinys sustojo. Neparašyk viso rašinio. Duok tik vieną aiškią užuominą.\n\nFormatas:\nKur esi dabar:\nKą daryti toliau:\nGalimas pradžios sakinys:\nKūrinys, kuris tiktų:`;
     case "checkEssay":

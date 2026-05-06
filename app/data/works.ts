@@ -1,5 +1,17 @@
 export type ArgumentLevel = "paprasta" | "vidutine" | "stipresne";
 
+export type ArgumentEntry = {
+  idea: string;
+  event: string;
+  connection: string;
+};
+
+export type ArgumentBank = Record<ArgumentLevel, ArgumentEntry>;
+
+function makeArgumentBank(argumentBank: ArgumentBank) {
+  return argumentBank;
+}
+
 export type Work = {
   id: string;
   title: string;
@@ -15,7 +27,7 @@ export type Work = {
   themes: string[];
   sampleArgument: string;
   commonMistakes: string;
-  argumentBank: Record<ArgumentLevel, string>;
+  argumentBank: ArgumentBank;
   lastDay?: string[];
 };
 
@@ -70,11 +82,23 @@ export const works: Work[] = [
     themes: ["abejingumas", "prievarta", "nelaiminga santuoka", "šeimos santykiai", "moters padėtis", "kodėl žmogus tampa nelaimingas", "artimųjų šaltumas", "ar šeima visada suteikia saugumą", "žmogaus kančia", "kitų žmonių įtaka žmogui"],
     sampleArgument: "Žemaitės apsakyme „Marti“ Katrė per prievartą ištekinama į šeimą, kurioje nejaučia meilės ir pagarbos. Vyro bei uošvių abejingumas ją palaužia, todėl kūrinys rodo, kad žmogų naikina emocinis šaltumas ir prievartiniai santykiai.",
     commonMistakes: "Nerašyti apie darbą: Katrės niekas nevertė dirbti, kūrinys tiesiog ne apie tai. Svarbiausia - prievartinė nelaiminga santuoka, emocinis šaltumas, nepagarba ir vyro bei uošvių abejingumas.",
-    argumentBank: {
-      paprasta: "Katrės likimas rodo, kad žmogų gali palaužti prievartinė santuoka ir artimųjų abejingumas.",
-      vidutine: "Žemaitė parodo, kad Katrė kenčia ne todėl, kad yra silpna, o todėl, kad yra per prievartą ištekinama į šeimą, kurioje nėra meilės, pagarbos ir užuojautos.",
-      stipresne: "Apsakyme „Marti“ atskleidžiama, kad žmogaus nelaimę sukuria dvasinė prievarta, abejingumas ir santykiai, kuriuose žmogus neturi teisės pats rinktis savo gyvenimo.",
-    },
+    argumentBank: makeArgumentBank({
+      paprasta: {
+            idea: "Prievartinė santuoka gali padaryti žmogų nelaimingą.",
+            event: "Katrė ištekinama už Jono Vingiaus ne iš meilės, o dėl šeimos ir ūkinių interesų.",
+            connection: "Ši situacija rodo, kad žmogus tampa nelaimingas, kai neturi teisės pats rinktis savo gyvenimo."
+      },
+      vidutine: {
+            idea: "Žmogų palaužia ne vien sunkumai, bet ir artimųjų abejingumas.",
+            event: "Katrė Vingių namuose nesulaukia nei vyro, nei uošvių meilės, pagarbos ar rūpesčio.",
+            connection: "Todėl kūrinys tinka kalbant apie tai, kad artimųjų šaltumas gali būti skaudesnis už fizinius sunkumus."
+      },
+      stipresne: {
+            idea: "Prievarta ir abejingumas naikina žmogaus orumą.",
+            event: "Katrė, patekusi į nelaimingą santuoką, galiausiai sunkiai suserga ir nesulaukia tinkamos pagalbos.",
+            connection: "Žemaitė parodo, kad žmogų gali sunaikinti santykiai, kuriuose nėra nei laisvės, nei užuojautos, nei pagarbos."
+      }
+}),
     lastDay: ["Katrė per prievartą ištekinama į Vingių šeimą.", "Ją palaužia nelaiminga santuoka, emocinis šaltumas ir artimųjų abejingumas.", "Nerašyk apie darbą: jos niekas nevertė dirbti, kūrinys ne apie tai."],
   },
   {
@@ -92,11 +116,23 @@ export const works: Work[] = [
     themes: ["narciziškumas", "kitų žmonių įtaka", "moralė", "žmogaus pasirinkimai", "žmogaus pražūtis", "grožis", "atsakomybės vengimas"],
     sampleArgument: "Oskaro Vaildo romane Dorianas Grėjus pats renkasi ydų kelią, todėl jo pražūtį lemia ne portretas, o moralės atsisakymas.",
     commonMistakes: "Dorianas Grėjus blogėja ne dėl paveikslo. Jis pats renkasi ydų kelią.",
-    argumentBank: {
-      paprasta: "Dorianas Grėjus parodo, kad grožis be moralės žmogaus neišgelbsti.",
-      vidutine: "Dorianas Grėjus išsaugo išorinį grožį, bet praranda sąžinę, todėl išvaizdos garbinimas jį sunaikina.",
-      stipresne: "Portretas tampa Doriano Grėjaus moralinės sąskaitos ženklu: išorinis patrauklumas slepia vis didesnį vidinį nuopuolį.",
-    },
+    argumentBank: makeArgumentBank({
+      paprasta: {
+            idea: "Grožis be moralės žmogaus neišgelbsti.",
+            event: "Dorianas trokšta likti amžinai jaunas, o jo portretas sensta ir rodo jo nuodėmes.",
+            connection: "Ši situacija leidžia teigti, kad išorinis grožis nieko vertas, jei žmogus praranda sąžinę."
+      },
+      vidutine: {
+            idea: "Savimeilė gali sunaikinti žmogaus moralę.",
+            event: "Dorianas vis labiau rūpinasi savo išvaizda ir malonumais, bet jo portretas atspindi didėjantį vidinį nuopuolį.",
+            connection: "Todėl kūrinys tinka temoms apie tai, kaip savanaudiškumas ir tuštybė griauna žmogų iš vidaus."
+      },
+      stipresne: {
+            idea: "Žmogus, slepiantis moralinį nuopuolį po gražia išore, galiausiai praranda save.",
+            event: "Dorianas bando sunaikinti portretą, kuris rodo jo tikrąją būseną, tačiau taip sunaikina ir save.",
+            connection: "Vaildas parodo, kad nuo sąžinės pabėgti neįmanoma - žmogaus pasirinkimai vis tiek turi pasekmes."
+      }
+}),
   },
   {
     id: "vakaru-fronte",
@@ -113,11 +149,23 @@ export const works: Work[] = [
     themes: ["karo beprasmybė", "istorinių aplinkybių poveikis", "žmogaus kančia", "jaunystės praradimas", "žmogiškumo praradimas"],
     sampleArgument: "Remarque romane karas sugriauna jaunų žmonių gyvenimus ir parodo, kad istorinės katastrofos naikina žmogų iš vidaus.",
     commonMistakes: "Kūrinys neheroizuoja karo. Jis rodo karo žalą žmogui.",
-    argumentBank: {
-      paprasta: "Karas sugriauna jaunų žmonių gyvenimus.",
-      vidutine: "Remarkas parodo, kad karas atima ne tik gyvybes, bet ir jaunystę, svajones bei vidinę ramybę.",
-      stipresne: "Kūrinys atskleidžia, kad karas sunaikina žmogaus žmogiškumą, nes jauni žmonės priverčiami gyventi nuolatinės mirties akivaizdoje.",
-    },
+    argumentBank: makeArgumentBank({
+      paprasta: {
+            idea: "Karas sugriauna jaunų žmonių gyvenimus.",
+            event: "Paulius Boimeris ir jo draugai iš mokyklos patenka į frontą ir susiduria su mirtimi.",
+            connection: "Ši situacija rodo, kad karas atima jaunystę ir saugumo jausmą."
+      },
+      vidutine: {
+            idea: "Karas naikina žmogaus vidinį pasaulį.",
+            event: "Frontas priverčia kareivius priprasti prie mirties, bado, baimės ir draugų žūties.",
+            connection: "Todėl romanas tinka temoms apie istorinių aplinkybių poveikį žmogui."
+      },
+      stipresne: {
+            idea: "Karas paverčia žmogų išgyvenimo įrankiu, atimdamas jo svajones ir žmogiškumą.",
+            event: "Paulius grįžęs namo nebesijaučia savas, nes karo patirtis jį atskiria nuo ankstesnio gyvenimo.",
+            connection: "Remarkas parodo, kad karas sunaikina ne tik kūną, bet ir žmogaus ryšį su savimi bei pasauliu."
+      }
+}),
     lastDay: ["Romanas rodo jaunų žmonių patirtį Pirmojo pasaulinio karo fronte.", "Karas čia nėra heroizuojamas - jis naikina jaunystę ir žmogiškumą.", "Naudok temoms apie karą, istorinių aplinkybių poveikį ir žmogaus kančią."],
   },
   {
@@ -135,11 +183,23 @@ export const works: Work[] = [
     themes: ["nelaiminga meilė", "kitų žmonių įtaka", "tautinė savimonė", "žmogaus vienišumas", "vidinis pasaulis", "jautrumas"],
     sampleArgument: "Ignas Šeinius rodo, kad Kuprelio kančia nėra silpnumas: nelaiminga meilė ir atskirtis jį skatina giliau suvokti save.",
     commonMistakes: "Kuprelis nėra silpnas žmogus. Jis labai jautrus ir dvasiškai gilus.",
-    argumentBank: {
-      paprasta: "Kuprelio nelaiminga meilė rodo, kad skausmas gali priversti žmogų susimąstyti apie save.",
-      vidutine: "Kuprelis kenčia dėl Gundės išdavystės, bet šią kančią paverčia vidinio brendimo patirtimi.",
-      stipresne: "Šeinius parodo, kad žmogaus vienišumas, atskirtis ir nelaiminga meilė gali tapti keliu į gilesnį savęs bei pasaulio suvokimą.",
-    },
+    argumentBank: makeArgumentBank({
+      paprasta: {
+            idea: "Nelaiminga meilė gali žmogų skaudinti, bet kartu priversti giliau susimąstyti apie save.",
+            event: "Kuprelis įsimyli Gundę, tačiau ji jį išduoda ir palieka skaudų vidinį išgyvenimą.",
+            connection: "Ši situacija rodo, kad sunkumai žmogų gali pakeisti iš vidaus, jeigu jis savo skausmą apmąsto."
+      },
+      vidutine: {
+            idea: "Skausminga patirtis gali tapti vidinio brendimo priežastimi.",
+            event: "Po Gundės išdavystės Kuprelis lieka vienišas, tačiau savo kančią sieja su gamta, Dievu ir likimo išbandymais.",
+            connection: "Todėl Kuprelio istorija tinka kalbant apie tai, kad kančia gali ugdyti žmogaus dvasinę stiprybę."
+      },
+      stipresne: {
+            idea: "Žmogaus atskirtis ir nelaiminga meilė gali atverti gilesnį santykį su savimi ir pasauliu.",
+            event: "Kuprelis dėl savo išvaizdos ir nelaimingos meilės pasitraukia į vidinį pasaulį, gamtoje ieško prasmės ir nusiraminimo.",
+            connection: "Šeinius parodo, kad net skaudi patirtis gali tapti žmogaus dvasinio augimo keliu."
+      }
+}),
     lastDay: ["Kuprelis patiria nelaimingą meilę Gundei.", "Jo kančia nėra vien skundas - ji tampa vidinio augimo išbandymu.", "Naudok temoms apie meilę, vienišumą, vidinį pasaulį ir jautrumą."],
   },
   {
@@ -157,11 +217,23 @@ export const works: Work[] = [
     themes: ["jaunimo maištas", "gyvenimo kelio paieškos", "vienišumas", "brendimas", "tikrumo paieška"],
     sampleArgument: "Džeromas Deividas Selindžeris parodo, kad Holdeno maištas kyla ne iš tingumo, o iš noro rasti tikrumą veidmainiškoje aplinkoje.",
     commonMistakes: "Holdenas nėra tiesiog tingus ar „edgy“. Jis pasimetęs ir ieško tikrumo.",
-    argumentBank: {
-      paprasta: "Holdenas rodo, kad jaunas žmogus dažnai jaučiasi nesuprastas.",
-      vidutine: "Holdeno maištas kyla iš noro rasti tikrumą pasaulyje, kuris jam atrodo veidmainiškas.",
-      stipresne: "Selindžeris parodo, kad brendimas dažnai susijęs su vienišumu, nusivylimu ir bandymu suprasti, kokios vertybės žmogui iš tikrųjų svarbios.",
-    },
+    argumentBank: makeArgumentBank({
+      paprasta: {
+            idea: "Jaunas žmogus dažnai jaučiasi nesuprastas.",
+            event: "Holdenas Kolfildas palieka mokyklą ir klaidžioja po Niujorką, jausdamasis vienišas.",
+            connection: "Ši situacija rodo, kad bręstant žmogui gali būti sunku rasti savo vietą."
+      },
+      vidutine: {
+            idea: "Maištas gali kilti iš nusivylimo netikru pasauliu.",
+            event: "Holdenas nuolat kritikuoja žmonių veidmainystę ir apsimetimą.",
+            connection: "Todėl kūrinys tinka kalbant apie jauną žmogų, kuris ieško tikrumo."
+      },
+      stipresne: {
+            idea: "Brendimas susijęs su bandymu išsaugoti jautrumą pasaulyje, kuris atrodo neteisingas.",
+            event: "Holdenas nori būti „rugiuose prie bedugnės“ ir saugoti vaikus nuo kritimo.",
+            connection: "Selindžeris parodo, kad jauno žmogaus maištas gali slėpti norą apsaugoti nekaltumą ir tikras vertybes."
+      }
+}),
   },
   {
     id: "tartiufas",
@@ -178,11 +250,23 @@ export const works: Work[] = [
     themes: ["veidmainystė", "kritinio mąstymo svarba", "manipuliacija", "žmogaus patiklumas", "apsimetimas"],
     sampleArgument: "Moljero komedijoje Tartiufas manipuliuoja religingumu, todėl kūrinys parodo, kaip svarbu atpažinti veidmainystę.",
     commonMistakes: "Tartiufas nėra tik „juokingas blogietis“. Jis manipuliuoja religingumu dėl naudos.",
-    argumentBank: {
-      paprasta: "Tartiufas rodo, kad ne visi žmonės yra tokie, kokiais apsimeta.",
-      vidutine: "Moljeras parodo, kad aklas pasitikėjimas gali leisti veidmainiams manipuliuoti kitais.",
-      stipresne: "Komedijoje kritikuojamas žmogaus patiklumas: kai žmogus nemąsto kritiškai, jis tampa lengvai valdomas apgavikų.",
-    },
+    argumentBank: makeArgumentBank({
+      paprasta: {
+            idea: "Žmogus gali apsimesti doru siekdamas naudos.",
+            event: "Tartiufas apsimeta pamaldžiu, kad įgytų Orgono pasitikėjimą.",
+            connection: "Ši situacija rodo, kad ne visada galima spręsti apie žmogų pagal jo išorinį elgesį."
+      },
+      vidutine: {
+            idea: "Patiklumas leidžia kitiems manipuliuoti žmogumi.",
+            event: "Orgonas taip tiki Tartiufu, kad yra pasirengęs jam atiduoti turtą ir dukters ateitį.",
+            connection: "Todėl komedija tinka kalbant apie kritinio mąstymo svarbą."
+      },
+      stipresne: {
+            idea: "Veidmainystė pavojinga tada, kai visuomenė nesugeba jos atpažinti.",
+            event: "Tartiufas beveik sugriauna Orgono šeimą, nes jo apgaulė ilgai laikoma dorybe.",
+            connection: "Moljeras parodo, kad aklas pasitikėjimas gali tapti silpnybe, kuria pasinaudoja manipuliatoriai."
+      }
+}),
   },
   {
     id: "antigone",
@@ -199,11 +283,23 @@ export const works: Work[] = [
     themes: ["maištas", "žmogiškumo gynimas", "moralė", "pareiga", "valdžia", "sąžinė", "drąsa"],
     sampleArgument: "Sofoklio tragedijoje Antigonė maištauja ne dėl egoizmo, o todėl, kad gina moralines vertybes.",
     commonMistakes: "Antigonė maištauja ne dėl egoizmo. Ji gina moralines vertybes.",
-    argumentBank: {
-      paprasta: "Antigonė rodo, kad žmogus turi klausyti sąžinės net tada, kai tai pavojinga.",
-      vidutine: "Antigonė pasirenka palaidoti brolį, nes jai moralinė pareiga svarbesnė už valdovo draudimą.",
-      stipresne: "Sofoklis parodo, kad tikra žmogaus stiprybė atsiskleidžia tada, kai jis išdrįsta ginti vertybes net rizikuodamas savo gyvybe.",
-    },
+    argumentBank: makeArgumentBank({
+      paprasta: {
+            idea: "Kartais sąžinė svarbesnė už valdžios įsakymą.",
+            event: "Antigonė palaidoja brolį Polineiką, nors Kreontas tai uždraudžia.",
+            connection: "Ši situacija rodo, kad žmogus turi klausyti sąžinės net tada, kai už tai gresia bausmė."
+      },
+      vidutine: {
+            idea: "Tikra drąsa atsiskleidžia tada, kai žmogus gina moralines vertybes.",
+            event: "Antigonė žino, kad bus nubausta, bet vis tiek pasirenka atlikti pareigą mirusiam broliui.",
+            connection: "Todėl Antigonė tinka kalbant apie pasiaukojimą, pareigą ir ištikimybę vertybėms."
+      },
+      stipresne: {
+            idea: "Moralinis pasirinkimas gali būti svarbesnis už asmeninį saugumą.",
+            event: "Antigonė neatsisako savo sprendimo net tada, kai Kreontas ją pasmerkia mirčiai.",
+            connection: "Sofoklis parodo, kad žmogaus kilnumas atsiskleidžia gebėjime ginti tai, kas teisinga, net prarandant gyvybę."
+      }
+}),
     lastDay: ["Antigonė palaidoja brolį nepaisydama Kreonto draudimo.", "Ji vadovaujasi sąžine, šeimos pareiga ir žmogiškumu.", "Naudok temoms apie moralę, pareigą, maištą ir valdžią."],
   },
   {
@@ -221,11 +317,23 @@ export const works: Work[] = [
     themes: ["lyderystė", "žmogus grėsmės akivaizdoje", "drąsa", "išmintis", "namų svarba", "šeima", "tikslas"],
     sampleArgument: "Homero „Odisėjoje“ Odisėjas stiprus ne vien kaip karys: jį gelbsti protas, strategija ir noras grįžti namo.",
     commonMistakes: "Odisėjas nėra tik „karys“. Jis išsiskiria protu ir strategija.",
-    argumentBank: {
-      paprasta: "Odisėjas rodo, kad sunkumus padeda įveikti atkaklumas.",
-      vidutine: "Odisėjas išlieka stiprus, nes net po daugybės išbandymų nepraranda tikslo grįžti namo.",
-      stipresne: "Homeras atskleidžia, kad žmogaus stiprybė slypi ne vien fizinėje jėgoje, bet ir gebėjime mąstyti bei neprarasti tikslo.",
-    },
+    argumentBank: makeArgumentBank({
+      paprasta: {
+            idea: "Sunkumus padeda įveikti atkaklumas.",
+            event: "Odisėjas dešimt metų keliauja namo į Itakę po Trojos karo.",
+            connection: "Ši situacija rodo, kad žmogus gali įveikti išbandymus, jei nepraranda tikslo."
+      },
+      vidutine: {
+            idea: "Tikras lyderis sunkumų metu turi išlikti išmintingas.",
+            event: "Odisėjas sugalvoja, kaip ištrūkti iš kiklopo Polifemo olos.",
+            connection: "Todėl Odisėjas tinka kalbant apie protą, drąsą ir gebėjimą veikti grėsmės akivaizdoje."
+      },
+      stipresne: {
+            idea: "Žmogaus stiprybė slypi gebėjime atsispirti pagundoms ir išsaugoti tikslą.",
+            event: "Odisėjas patiria pavojus ir pagundas, bet vis tiek siekia grįžti pas Penelopę į Itakę.",
+            connection: "Homeras parodo, kad ištikimybė tikslui padeda žmogui nepasimesti net ilgoje gyvenimo kelionėje."
+      }
+}),
     lastDay: ["Odisėjas keliauja į Itakę ir patiria daug pavojų.", "Jį gelbsti protas, strategija ir tikslas grįžti namo.", "Naudok temoms apie lyderystę, išmintį, grėsmę ir namus."],
   },
   {
@@ -243,11 +351,23 @@ export const works: Work[] = [
     themes: ["abejonės", "atsakomybė", "pasirinkimai", "vidinė kova", "neveiklumas", "moralė"],
     sampleArgument: "Viljamo Šekspyro tragedijoje Hamletas ilgai svarsto, todėl jo vidinė kova parodo, kaip abejonės gali sutrukdyti atsakingai veikti.",
     commonMistakes: "Nepaversti visko tik keršto istorija. Svarbiausia - Hamleto vidinė kova ir delsimas.",
-    argumentBank: {
-      paprasta: "Hamletas rodo, kad abejonės gali trukdyti žmogui veikti.",
-      vidutine: "Hamletas ilgai svarsto, kaip pasielgti, todėl jo dvejonės prisideda prie tragiškos baigties.",
-      stipresne: "Šekspyras atskleidžia, kad žmogaus vidinė kova gali būti pražūtinga, kai mąstymas nepereina į atsakingą veiksmą.",
-    },
+    argumentBank: makeArgumentBank({
+      paprasta: {
+            idea: "Abejonės gali trukdyti žmogui veikti.",
+            event: "Hamletas sužino apie tėvo nužudymą, bet ilgai delsia keršyti Klaudijui.",
+            connection: "Ši situacija rodo, kad per ilgas svarstymas gali trukdyti priimti sprendimą."
+      },
+      vidutine: {
+            idea: "Vidinė kova gali žmogų silpninti.",
+            event: "Hamletas nuolat svarsto, kas teisinga, abejoja savimi ir aplinkiniais.",
+            connection: "Todėl kūrinys tinka temoms apie pasirinkimus, atsakomybę ir abejojantį žmogų."
+      },
+      stipresne: {
+            idea: "Neveikimas taip pat gali turėti tragiškų pasekmių.",
+            event: "Hamleto delsimas prisideda prie daugelio veikėjų žūties tragedijos pabaigoje.",
+            connection: "Šekspyras parodo, kad žmogus atsakingas ne tik už veiksmus, bet ir už per ilgą neveiklumą."
+      }
+}),
   },
   {
     id: "maryte",
@@ -264,11 +384,23 @@ export const works: Work[] = [
     themes: ["išlikimas", "karas", "vaikystės praradimas", "atjauta", "viltis", "žmogaus ištvermė", "istorinės tragedijos"],
     sampleArgument: "Alvydo Šlepiko romane vaikai priversti kovoti dėl išlikimo, todėl jų patirtys rodo, kaip sunkumai gali priversti žmogų greitai subręsti.",
     commonMistakes: "Nerašyti tik „vaikai badavo“. Reikia paaiškinti, ką tai rodo apie žmogaus ištvermę, viltį ir atjautą.",
-    argumentBank: {
-      paprasta: "Marytės istorija rodo, kad sunkumai gali priversti žmogų greitai suaugti.",
-      vidutine: "Romane vaikai kovoja dėl išlikimo, todėl jų patirtys atskleidžia žmogaus ištvermę karo ir bado sąlygomis.",
-      stipresne: "Šlepikas parodo, kad net istorinių tragedijų metu žmogui išlikti padeda viltis, prisitaikymas ir kitų žmonių atjauta.",
-    },
+    argumentBank: makeArgumentBank({
+      paprasta: {
+            idea: "Sunkumai gali priversti vaiką greitai suaugti.",
+            event: "Renatė / Marytė ir kiti vilko vaikai po karo keliauja į Lietuvą ieškoti maisto.",
+            connection: "Ši situacija rodo, kad sunkios sąlygos priverčia žmogų tapti savarankišką."
+      },
+      vidutine: {
+            idea: "Noras išgyventi gali suteikti žmogui stiprybės.",
+            event: "Vaikai badauja, bijo kareivių, praranda namus, bet vis tiek ieško būdų išlikti.",
+            connection: "Todėl romanas tinka kalbant apie žmogaus ištvermę karo ir bado sąlygomis."
+      },
+      stipresne: {
+            idea: "Net žiauriomis aplinkybėmis žmogų gelbsti viltis ir kitų atjauta.",
+            event: "Vilko vaikai išgyvena tik tada, kai atsiranda žmonių, kurie juos priglaudžia ar pamaitina.",
+            connection: "Šlepikas parodo, kad sunkumai ne tik užgrūdina, bet ir atskleidžia, kiek žmogui svarbus žmogiškumas."
+      }
+}),
     lastDay: ["Vilko vaikai po karo keliauja į Lietuvą ieškodami maisto.", "Marytės istorija rodo priverstinį brendimą ir ištvermę.", "Naudok temoms apie išlikimą, karą, viltį ir atjautą."],
   },
   {
@@ -286,11 +418,23 @@ export const works: Work[] = [
     themes: ["bausmė", "žmogaus ydos", "beprasmis darbas", "apgaulė", "pasekmės"],
     sampleArgument: "Sizifo mitas rodo, kad žmogaus apgaulės ir ydos gali virsti ilgalaike bausme.",
     commonMistakes: "Sizifą galima naudoti kaip bausmės arba beprasmybės pavyzdį, bet reikia aiškiai pasirinkti kryptį.",
-    argumentBank: {
-      paprasta: "Sizifas rodo, kad darbas be tikslo gali tapti bausme.",
-      vidutine: "Jo amžinas akmens ridenimas padeda kalbėti apie pastangas, kurios neduoda rezultato.",
-      stipresne: "Sizifo istoriją galima aiškinti kaip įspėjimą, kad žmogus turi suvokti savo veiksmų tikslą ir pasekmes.",
-    },
+    argumentBank: makeArgumentBank({
+      paprasta: {
+            idea: "Darbas be tikslo gali tapti bausme.",
+            event: "Sizifas amžinai ridena akmenį į kalną, bet šis vis nurieda žemyn.",
+            connection: "Ši situacija rodo, kad pastangos be prasmės gali žmogų išsekinti."
+      },
+      vidutine: {
+            idea: "Žmogus turi suvokti savo veiksmų tikslą.",
+            event: "Sizifas baudžiamas amžinai kartoti tą patį darbą, kuris niekada nesibaigia rezultatu.",
+            connection: "Todėl Sizifo mitas tinka kalbant apie beprasmes pastangas ir atsakomybę už savo pasirinkimus."
+      },
+      stipresne: {
+            idea: "Veiksmai be moralinio pagrindo gali privesti prie beprasmybės.",
+            event: "Dėl savo apgaulių Sizifas pasmerkiamas darbui, kuris neturi pabaigos ir prasmės.",
+            connection: "Sizifo istorija įspėja, kad žmogus turi galvoti ne tik apie gudrumą, bet ir apie savo veiksmų pasekmes."
+      }
+}),
   },
   {
     id: "narcizas",
@@ -307,11 +451,23 @@ export const works: Work[] = [
     themes: ["puikybė", "savimeilė", "žmogaus ydos", "vienišumas", "ryšys su pasauliu"],
     sampleArgument: "Narcizo mitas parodo, kad perdėtas žavėjimasis savimi žmogų atskiria nuo kitų.",
     commonMistakes: "Nerašyti tik „jis buvo gražus“. Svarbiausia - savimeilė ir ryšio su kitais praradimas.",
-    argumentBank: {
-      paprasta: "Narcizas rodo, kad per didelė meilė sau žmogų pražudo.",
-      vidutine: "Narcizas taip susižavi savimi, kad praranda ryšį su kitais žmonėmis ir tikrove.",
-      stipresne: "Narcizo mitas atskleidžia, kad savimeilė tampa pavojinga tada, kai žmogus nebemato nieko, išskyrus save.",
-    },
+    argumentBank: makeArgumentBank({
+      paprasta: {
+            idea: "Per didelė meilė sau gali žmogų pražudyti.",
+            event: "Narcizas pamato savo atvaizdą vandenyje ir įsimyli pats save.",
+            connection: "Ši situacija rodo, kad savimeilė gali atitraukti žmogų nuo tikro gyvenimo."
+      },
+      vidutine: {
+            idea: "Savimeilė atitolina žmogų nuo kitų.",
+            event: "Narcizas taip susižavi savimi, kad jam neberūpi nei žmonės, nei gyvenimas.",
+            connection: "Todėl mitas tinka temoms apie egoizmą, tuštybę ir vienišumą."
+      },
+      stipresne: {
+            idea: "Žmogus, matantis tik save, praranda ryšį su tikrove.",
+            event: "Narcizas negali atsitraukti nuo savo atvaizdo ir galiausiai miršta.",
+            connection: "Mitas parodo, kad savimeilė tampa pražūtinga tada, kai žmogus nebemato nieko, išskyrus save."
+      }
+}),
   },
   {
     id: "prometejas",
@@ -328,11 +484,23 @@ export const works: Work[] = [
     themes: ["pasiaukojimas", "laisvė", "maištas", "žmoniškumas", "pagalba kitiems"],
     sampleArgument: "Prometėjas aukojasi dėl žmonių, todėl jo istorija tinka kalbėti apie drąsą ir žmoniškumą.",
     commonMistakes: "Nepamiršti, kad ugnis simbolizuoja pažangą, žinias ir žmonių gerovę.",
-    argumentBank: {
-      paprasta: "Prometėjas rodo, kad dėl kitų žmonių kartais verta aukotis.",
-      vidutine: "Prometėjas padeda žmonėms, nors žino, kad už tai bus nubaustas, todėl jo istorija tinka kalbant apie pasiaukojimą.",
-      stipresne: "Prometėjo mitas atskleidžia, kad žmoniškumas ir pažanga dažnai gimsta iš drąsos priešintis neteisingai galiai.",
-    },
+    argumentBank: makeArgumentBank({
+      paprasta: {
+            idea: "Dėl kitų žmonių kartais verta aukotis.",
+            event: "Prometėjas pavagia iš dievų ugnį ir atiduoda ją žmonėms.",
+            connection: "Ši situacija rodo, kad pasiaukojimas gali būti prasmingas, jei jis padeda kitiems."
+      },
+      vidutine: {
+            idea: "Pagalba kitiems reikalauja drąsos.",
+            event: "Prometėjas žino, kad Dzeusas jį nubaus, bet vis tiek padeda žmonijai.",
+            connection: "Todėl mitas tinka temoms apie drąsą, atsakomybę ir kilnius tikslus."
+      },
+      stipresne: {
+            idea: "Pažanga ir žmoniškumas dažnai gimsta iš pasipriešinimo neteisingai galiai.",
+            event: "Dzeusas nubaudžia Prometėją prikaustydamas jį prie uolos, bet žmonės gauna ugnį ir žinias.",
+            connection: "Prometėjo istorija parodo, kad tikras heroizmas yra veikti dėl kitų net tada, kai pats dėl to kenčia."
+      }
+}),
     lastDay: ["Prometėjas atiduoda žmonėms ugnį.", "Ugnis reiškia pažangą, žinias ir žmonių gerovę.", "Naudok temoms apie pasiaukojimą, maištą ir žmoniškumą."],
   },
   {
@@ -350,11 +518,23 @@ export const works: Work[] = [
     themes: ["laisvė", "jaunatviškas maksimalizmas", "maištas", "žmogaus ribos", "neatsargumas"],
     sampleArgument: "Ikaro istorija rodo, kad neatsargus laisvės troškimas gali peržengti ribas ir baigtis pražūtimi.",
     commonMistakes: "Ikaras nėra tiesiog „drąsus“. Jo istorija įspėja apie neatsargų ribų peržengimą.",
-    argumentBank: {
-      paprasta: "Ikaras rodo, kad laisvės troškimas be atsargumo gali būti pavojingas.",
-      vidutine: "Ikaras žūsta, nes nepaiso tėvo perspėjimo, todėl mitas tinka kalbant apie ribų ir atsakomybės svarbą.",
-      stipresne: "Dedalo ir Ikaro istorija parodo, kad jaunatviškas noras peržengti ribas gali būti gražus, bet be išminties jis tampa pražūtingas.",
-    },
+    argumentBank: makeArgumentBank({
+      paprasta: {
+            idea: "Laisvės troškimas be atsargumo gali būti pavojingas.",
+            event: "Ikaras nepaiso Dedalo perspėjimo ir skrenda per arti saulės.",
+            connection: "Ši situacija rodo, kad žmogaus svajonės turi būti derinamos su atsakomybe."
+      },
+      vidutine: {
+            idea: "Jaunatviškas maksimalizmas gali pražudyti.",
+            event: "Ikarą suvilioja skrydžio laisvė, todėl jis pakyla per aukštai ir žūsta.",
+            connection: "Todėl mitas tinka kalbant apie ribas, patarimų klausymą ir neatsargų maištą."
+      },
+      stipresne: {
+            idea: "Žmogus turi suvokti savo galimybių ribas.",
+            event: "Dedalas sukuria sparnus kaip išsigelbėjimą, bet Ikaras laisvę paverčia neatsakingu troškimu pakilti aukščiau.",
+            connection: "Mitas parodo, kad laisvė tampa pavojinga, kai žmogus pamiršta išmintį ir saiką."
+      }
+}),
   },
   {
     id: "kainas-abelis",
@@ -371,11 +551,23 @@ export const works: Work[] = [
     themes: ["pavydas", "žmogaus ydos", "moralė", "kaltė", "atsakomybė"],
     sampleArgument: "Kaino ir Abelio istorija rodo, kad nevaldomas pavydas gali pastūmėti žmogų į nusikaltimą.",
     commonMistakes: "Svarbu pabrėžti pavydą, kaltę ir atsakomybę, ne tik žmogžudystę.",
-    argumentBank: {
-      paprasta: "Kainas rodo, kad pavydas gali pastūmėti žmogų į blogį.",
-      vidutine: "Kainas nesuvaldo pavydo broliui, todėl pasakojimas tinka kalbant apie žmogaus atsakomybę už savo jausmus ir veiksmus.",
-      stipresne: "Kaino ir Abelio istorija atskleidžia, kad nevaldoma neapykanta gali sunaikinti ne tik kitą žmogų, bet ir paties žmogaus moralę.",
-    },
+    argumentBank: makeArgumentBank({
+      paprasta: {
+            idea: "Pavydas gali pastūmėti žmogų į blogį.",
+            event: "Kainas supyksta, kai Dievas priima Abelio auką, o jo auką atmeta.",
+            connection: "Ši situacija rodo, kad pavydas gali sugriauti žmogaus moralę."
+      },
+      vidutine: {
+            idea: "Nevaldomi jausmai gali turėti skaudžių pasekmių.",
+            event: "Kainas nesuvaldo pykčio ir nužudo savo brolį Abelį.",
+            connection: "Todėl pasakojimas tinka kalbant apie atsakomybę už savo jausmus ir veiksmus."
+      },
+      stipresne: {
+            idea: "Pavydas naikina ne tik kitą žmogų, bet ir patį nusikaltusįjį.",
+            event: "Už Abelio nužudymą Kainas nubaudžiamas klajoti ir neberanda ramybės.",
+            connection: "Biblinė istorija rodo, kad žmogus negali pabėgti nuo kaltės ir savo pasirinkimų pasekmių."
+      }
+}),
   },
   {
     id: "babelio-bokstas",
@@ -392,11 +584,23 @@ export const works: Work[] = [
     themes: ["puikybė", "žmonių susikalbėjimas", "visuomenė", "bendruomenė", "žmogaus ydos"],
     sampleArgument: "Babelio bokšto pasakojimas rodo, kad žmonių puikybė gali sugriauti tarpusavio supratimą.",
     commonMistakes: "Nerašyti tik apie bokšto statymą. Svarbiausia - puikybė ir bendrystės suirimas.",
-    argumentBank: {
-      paprasta: "Babelio bokštas rodo, kad puikybė gali suskaldyti žmones.",
-      vidutine: "Žmonės siekia išaukštinti save, todėl praranda gebėjimą susikalbėti ir veikti kartu.",
-      stipresne: "Babelio bokšto pasakojimas parodo, kad bendruomenė griūva tada, kai žmones suvienija ne bendras gėris, o puikybė ir noras prilygti aukštesnei galiai.",
-    },
+    argumentBank: makeArgumentBank({
+      paprasta: {
+            idea: "Puikybė gali sugriauti žmonių vienybę.",
+            event: "Žmonės stato bokštą, norėdami pasiekti dangų ir išaukštinti save.",
+            connection: "Ši situacija rodo, kad puikybė trukdo žmonėms veikti dėl bendro gėrio."
+      },
+      vidutine: {
+            idea: "Kai žmonės siekia garbės, jie praranda gebėjimą susikalbėti.",
+            event: "Dievas sumaišo žmonių kalbas, todėl jie nebegali tęsti bokšto statybos.",
+            connection: "Todėl pasakojimas tinka kalbant apie nesusikalbėjimą ir bendruomenės skilimą."
+      },
+      stipresne: {
+            idea: "Bendruomenė griūva, kai ją vienija ne vertybės, o noras išaukštinti save.",
+            event: "Babelio bokšto statyba baigiasi žmonių išsisklaidymu po pasaulį.",
+            connection: "Biblinis pasakojimas parodo, kad puikybė gali sunaikinti net stiprią žmonių bendrystę."
+      }
+}),
   },
   {
     id: "sunus-palaidunas",
@@ -413,11 +617,23 @@ export const works: Work[] = [
     themes: ["atleidimas", "žmogaus stiprybė", "klaidų pripažinimas", "keitimasis", "dvasinis augimas"],
     sampleArgument: "Sūnaus palaidūno parabolė rodo, kad žmogus stiprus tada, kai sugeba pripažinti klaidą ir keistis.",
     commonMistakes: "Nerašyti tik, kad sūnus „grįžo namo“. Svarbu klaidos pripažinimas ir atleidimas.",
-    argumentBank: {
-      paprasta: "Sūnus palaidūnas rodo, kad žmogus gali pasikeisti pripažinęs klaidas.",
-      vidutine: "Ši parabolė tinka kalbant apie atleidimą, nes tėvas priima grįžusį sūnų, nors šis buvo suklydęs.",
-      stipresne: "Sūnaus palaidūno istorija atskleidžia, kad tikras dvasinis augimas prasideda tada, kai žmogus suvokia savo kaltę ir išdrįsta grįžti prie vertybių.",
-    },
+    argumentBank: makeArgumentBank({
+      paprasta: {
+            idea: "Žmogus gali pasikeisti, jei pripažįsta savo klaidas.",
+            event: "Sūnus iššvaisto palikimą ir, supratęs savo klaidą, grįžta pas tėvą.",
+            connection: "Ši situacija rodo, kad tikra stiprybė yra mokėti pripažinti kaltę."
+      },
+      vidutine: {
+            idea: "Atleidimas padeda žmogui grįžti prie vertybių.",
+            event: "Tėvas priima grįžusį sūnų, nors šis buvo suklydęs.",
+            connection: "Todėl parabolė tinka kalbant apie atleidimą, gailestį ir žmogaus dvasinį augimą."
+      },
+      stipresne: {
+            idea: "Klaidų pripažinimas yra kelias į vidinį pasikeitimą.",
+            event: "Sūnus grįžta ne iš pasididžiavimo, o suvokęs savo nuopuolį ir kaltę.",
+            connection: "Biblinė istorija parodo, kad žmogus gali atgauti orumą tada, kai išdrįsta keistis."
+      }
+}),
   },
   {
     id: "diev-komedija",
@@ -434,11 +650,23 @@ export const works: Work[] = [
     themes: ["žmogaus prigimtis", "moralė", "žmogaus ydos", "klaidos", "dvasinis kelias"],
     sampleArgument: "Dantės poema rodo, kad žmogus turi atpažinti savo ydas ir sąmoningai rinktis moralinį kelią.",
     commonMistakes: "Nerašyti tik apie „pragarą“. Svarbiausia - žmogaus moralinis kelias.",
-    argumentBank: {
-      paprasta: "Dantės kūrinys rodo, kad žmogus atsako už savo veiksmus.",
-      vidutine: "Kelionė per Pragarą, Skaistyklą ir Rojų padeda kalbėti apie žmogaus klaidas, atsakomybę ir galimybę keistis.",
-      stipresne: "„Dieviškoji komedija“ atskleidžia žmogaus moralinį kelią: norėdamas pasiekti dvasinį išsigelbėjimą, žmogus turi atpažinti savo ydas ir nuo jų apsivalyti.",
-    },
+    argumentBank: makeArgumentBank({
+      paprasta: {
+            idea: "Žmogus atsako už savo veiksmus.",
+            event: "Dantė keliauja per Pragarą ir mato žmones, baudžiamus už savo nuodėmes.",
+            connection: "Ši situacija rodo, kad žmogaus pasirinkimai turi pasekmes."
+      },
+      vidutine: {
+            idea: "Žmogus turi atpažinti savo ydas, kad galėtų keistis.",
+            event: "Kelionė per Pragarą, Skaistyklą ir Rojų vaizduoja moralinį žmogaus kelią.",
+            connection: "Todėl kūrinys tinka temoms apie atsakomybę, nuodėmę ir dvasinį augimą."
+      },
+      stipresne: {
+            idea: "Tikras žmogaus kelias yra judėjimas nuo paklydimo į moralinį apsivalymą.",
+            event: "Dantę iš tamsaus miško per pomirtinį pasaulį veda Vergilijus, o vėliau Beatričė.",
+            connection: "Dantė Aligjeris parodo, kad žmogui reikia pripažinti savo paklydimus, kad jis galėtų pasiekti vidinę šviesą."
+      }
+}),
   },
   {
     id: "gedimino-laiskai",
@@ -455,11 +683,23 @@ export const works: Work[] = [
     themes: ["lyderystė", "atsakomybė už valstybę", "valstybės kūrimas", "tėvynė", "šalies ateitis"],
     sampleArgument: "Gedimino laiškai rodo, kad išmintingas valdovas galvoja ne tik apie valdžią, bet ir apie valstybės ateitį.",
     commonMistakes: "Nepainioti su grožiniu romanu. Tai laiškai, svarbūs kalbant apie lyderystę ir valstybės kūrimą.",
-    argumentBank: {
-      paprasta: "Gediminas rodo, kad geras valdovas rūpinasi savo valstybės ateitimi.",
-      vidutine: "Laiškuose Gediminas kviečia žmones atvykti į Lietuvą, todėl jie tinka kalbant apie lyderystę ir valstybės kūrimą.",
-      stipresne: "Gedimino laiškai parodo, kad išmintinga lyderystė remiasi ne tik valdžia, bet ir gebėjimu kurti valstybės gerovę, telkti žmones ir žvelgti į ateitį.",
-    },
+    argumentBank: makeArgumentBank({
+      paprasta: {
+            idea: "Geras valdovas rūpinasi savo valstybės ateitimi.",
+            event: "Gediminas laiškuose kviečia į Lietuvą atvykti amatininkus, pirklius, vienuolius ir kitus žmones.",
+            connection: "Ši situacija rodo, kad lyderis turi galvoti ne tik apie save, bet ir apie šalies stiprinimą."
+      },
+      vidutine: {
+            idea: "Valstybės kūrimas reikalauja atvirumo ir atsakomybės.",
+            event: "Gediminas siūlo atvykėliams saugumą ir geras sąlygas gyventi Lietuvoje.",
+            connection: "Todėl laiškai tinka temoms apie išmintingą lyderystę ir atsakomybę už bendruomenę."
+      },
+      stipresne: {
+            idea: "Tikras lyderis kuria valstybę telkdamas žmones ir žvelgdamas į ateitį.",
+            event: "Gedimino laiškai skirti ne vien informuoti, bet ir parodyti Lietuvą kaip augančią, stiprėjančią valstybę.",
+            connection: "Gedimino pavyzdys rodo, kad valdovo stiprybė slypi gebėjime kurti sąlygas žmonėms ir valstybei klestėti."
+      }
+}),
   },
   {
     id: "cepelinai-krepsinis",
@@ -476,11 +716,122 @@ export const works: Work[] = [
     themes: ["stereotipai", "meilė tėvynei", "tautinis identitetas", "patriotizmas", "sąmoningas santykis"],
     sampleArgument: "Parulskis parodo, kad meilė tėvynei neturi apsiriboti cepelinų ar krepšinio stereotipais.",
     commonMistakes: "Nerašyti, kad autorius nemyli Lietuvos. Jis kritikuoja paviršutinišką patriotizmą.",
-    argumentBank: {
-      paprasta: "Parulskis rodo, kad meilė tėvynei neturėtų apsiriboti stereotipais.",
-      vidutine: "Esė kritikuojamas paviršutiniškas patriotizmas, kai tauta siejama tik su maistu, sportu ar įvaizdžiais.",
-      stipresne: "Parulskis atskleidžia, kad tikras santykis su tėvyne turi būti sąmoningas: žmogus turi gebėti ne tik didžiuotis savo šalimi, bet ir kritiškai ją suprasti.",
-    },
+    argumentBank: makeArgumentBank({
+      paprasta: {
+            idea: "Meilė tėvynei neturi būti paremta vien stereotipais.",
+            event: "Esė kalbama apie lietuvius dažnai lydinčius stereotipus - cepelinus, krepšinį ir panašius ženklus.",
+            connection: "Ši situacija rodo, kad tautiškumas neturėtų būti suprantamas tik paviršutiniškai."
+      },
+      vidutine: {
+            idea: "Stereotipai gali susiaurinti žmogaus požiūrį į savo šalį.",
+            event: "Parulskis ironiškai žvelgia į įprastus lietuviškumo simbolius.",
+            connection: "Todėl esė tinka kalbant apie tai, kad tikra meilė tėvynei reikalauja sąmoningo, o ne aklo santykio."
+      },
+      stipresne: {
+            idea: "Brandus patriotizmas reiškia gebėjimą savo šalį ne tik girti, bet ir kritiškai suprasti.",
+            event: "Autorius pasitelkia kasdienius tautinius stereotipus, kad parodytų paviršutiniško patriotizmo ribotumą.",
+            connection: "Parulskis leidžia teigti, kad tikras ryšys su tėvyne kyla iš mąstymo, o ne iš tuščių simbolių kartojimo."
+      }
+}),
+  },
+  {
+    id: "mindaugas",
+    title: "Mindaugas",
+    author: "Justinas Marcinkevičius",
+    authorDates: "1930-2011",
+    period: "XX a. lietuvių literatūra",
+    genre: "Drama",
+    mainIdea: "Valstybės kūrimas reikalauja atsakomybės, sunkių pasirinkimų ir moralinės kainos.",
+    problem: "Kokia yra lyderio atsakomybė kuriant valstybę?",
+    characters: ["Mindaugas", "Morta", "artimieji", "politinių kovų dalyviai"],
+    situation: "Mindaugas siekia suvienyti Lietuvą ir kurti stiprią valstybę, tačiau jo sprendimus lydi konfliktai, išdavystės ir asmeninės aukos.",
+    howToUseInEssay: "Tinka temoms apie lyderystę, atsakomybę už valstybę, pasirinkimų kainą ir tėvynę.",
+    themes: ["lyderystė", "atsakomybė", "valstybė", "tėvynė", "pasirinkimai", "valdžia", "moralinės dilemos"],
+    sampleArgument: "Justinas Marcinkevičius dramoje „Mindaugas“ parodo, kad valstybės kūrimas nėra vien pergalė: valdovas turi prisiimti atsakomybę už sprendimus, kurie paliečia ir jį patį, ir artimuosius.",
+    commonMistakes: "Nerašyti tik apie Mindaugą kaip valdovą. Svarbu paaiškinti, kokią moralinę kainą turi valstybės kūrimas.",
+    argumentBank: makeArgumentBank({
+      paprasta: {
+        idea: "Valstybės kūrimas reikalauja atsakomybės.",
+        event: "Mindaugas siekia suvienyti Lietuvą ir tapti stiprios valstybės valdovu.",
+        connection: "Ši situacija rodo, kad tikras lyderis turi galvoti ne tik apie save, bet ir apie savo šalį.",
+      },
+      vidutine: {
+        idea: "Dideli tikslai dažnai reikalauja sunkių pasirinkimų.",
+        event: "Mindaugas kuria valstybę konfliktų, išdavysčių ir politinės įtampos aplinkoje.",
+        connection: "Todėl drama tinka kalbant apie atsakomybę, valdžią ir žmogaus pasirinkimų kainą.",
+      },
+      stipresne: {
+        idea: "Lyderystė gali tapti vidine našta, nes valdovas turi rinktis tarp asmeninės laimės ir valstybės interesų.",
+        event: "Mindaugo sprendimai susiję ne tik su politika, bet ir su artimų žmonių likimais.",
+        connection: "Marcinkevičius parodo, kad valstybės kūrimas nėra vien pergalė - tai ir moralinių dilemų kelias.",
+      },
+    }),
+  },
+  {
+    id: "lazda",
+    title: "Lazda",
+    author: "Jonas Biliūnas",
+    authorDates: "1879-1907",
+    period: "XX a. pradžia",
+    genre: "Apsakymas",
+    mainIdea: "Atleidimas gali parodyti didesnę žmogaus stiprybę negu kerštas.",
+    problem: "Ar atleidimas yra žmogaus silpnumas, ar stiprybė?",
+    characters: ["pasakotojo tėvas", "Dumbrauckas", "pasakotojas"],
+    situation: "Pasakotojo tėvas atleidžia jį nuskriaudusiam Dumbrauckui, o lazda tampa skriaudos ir moralinio kilnumo ženklu.",
+    howToUseInEssay: "Tinka temoms apie atleidimą, moralinę stiprybę, žmoniškumą ir gebėjimą neatsakyti blogiu į blogį.",
+    themes: ["atleidimas", "moralinė stiprybė", "žmoniškumas", "neteisybė", "nuoskauda", "kilnumas"],
+    sampleArgument: "Jono Biliūno apsakyme „Lazda“ tėvas atleidžia skriaudėjui Dumbrauckui, todėl kūrinys rodo, kad žmogaus stiprybė gali atsiskleisti ne kerštu, o gebėjimu išlikti kilniam.",
+    commonMistakes: "Nepainioti su „Ubagu“: Dumbraucko lazda siejama su Biliūno kūriniu „Lazda“.",
+    argumentBank: makeArgumentBank({
+      paprasta: {
+        idea: "Atleidimas rodo žmogaus vidinę stiprybę.",
+        event: "Tėvas atleidžia skriaudėjui Dumbrauckui ir laiko jo dovanotą lazdą.",
+        connection: "Ši situacija rodo, kad stiprus žmogus ne visada keršija - kartais jis pasirenka atleisti.",
+      },
+      vidutine: {
+        idea: "Tikra žmogaus stiprybė yra gebėjimas neatsakyti blogiu į blogį.",
+        event: "Nors Dumbrauckas tėvą buvo nuskriaudęs, tėvas nelaiko neapykantos svarbiausiu savo gyvenimo jausmu.",
+        connection: "Todėl Biliūno kūrinys tinka temoms apie atlaidumą, moralinę stiprybę ir žmoniškumą.",
+      },
+      stipresne: {
+        idea: "Atleidimas gali būti aukštesnė moralinė pergalė už kerštą.",
+        event: "Lazda tampa ne tik skriaudos prisiminimu, bet ir tėvo gebėjimo pakilti virš nuoskaudos ženklu.",
+        connection: "Biliūnas parodo, kad žmogaus kilnumas atsiskleidžia tada, kai jis sugeba išsaugoti žmogiškumą net patyręs neteisybę.",
+      },
+    }),
+  },
+  {
+    id: "lape-ir-vynuoges",
+    title: "Lapė ir vynuogės",
+    author: "Ezopas (Aesop)",
+    authorDates: "apie VI a. pr. Kr.",
+    period: "Antika",
+    genre: "Pasakėčia",
+    mainIdea: "Žmogus kartais menkina tai, ko negali pasiekti, kad paslėptų savo nesėkmę.",
+    problem: "Kodėl žmogui sunku pripažinti nesėkmę?",
+    characters: ["lapė"],
+    situation: "Lapė nepasiekia vynuogių ir ima sakyti, kad jos vis tiek rūgščios.",
+    howToUseInEssay: "Tinka temoms apie saviapgaulę, puikybę, žmogaus ydas ir nenorą pripažinti tiesą.",
+    themes: ["saviapgaulė", "puikybė", "žmogaus ydos", "nesėkmė", "tiesa", "savivertė"],
+    sampleArgument: "Ezopo pasakėčioje lapė nepasiekia vynuogių ir ima jas menkinti, todėl kūrinys rodo, kaip žmogus kartais pateisina savo nesėkmę iškraipydamas tikrovę.",
+    commonMistakes: "Nerašyti tik, kad lapė norėjo vynuogių. Svarbiausia - jos bandymas pateisinti nesėkmę.",
+    argumentBank: makeArgumentBank({
+      paprasta: {
+        idea: "Žmogus dažnai menkina tai, ko negali pasiekti.",
+        event: "Lapė nepasiekia vynuogių ir ima sakyti, kad jos vis tiek rūgščios.",
+        connection: "Ši situacija rodo, kad žmogus kartais slepia savo nesėkmę apsimesdamas, jog tikslas jam nerūpėjo.",
+      },
+      vidutine: {
+        idea: "Puikybė trukdo žmogui pripažinti nesėkmę.",
+        event: "Lapė negali gauti vynuogių, bet vietoj pripažinimo ima jas niekinti.",
+        connection: "Todėl pasakėčia tinka kalbant apie žmogaus saviapgaulę ir nenorą matyti tiesos.",
+      },
+      stipresne: {
+        idea: "Žmogus dažnai saugo savo savivertę iškraipydamas tikrovę.",
+        event: "Lapės žodžiai apie „rūgščias“ vynuoges yra būdas pateisinti savo nesėkmę.",
+        connection: "Ezopas parodo, kad žmogaus ydos dažnai pasireiškia ne atvirai, o per bandymą paslėpti savo silpnumą.",
+      },
+    }),
   },
 ];
 
